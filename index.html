@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <style>
+      select {
+        height: 200px;
+        overflow: auto;
+        width: 200px;
+      }
+
+      input {
+        width: 70%;
+        margin-bottom: 5px;
+      }
+
+      .clearfix {
+        display: block;
+      }
+
+      .grid-container {
+        display: grid;
+        column-gap: 10px;
+        grid-template-columns: auto auto auto auto;
+        background-color: #2196f3;
+        padding: 10px;
+        margin-bottom: 40px;
+      }
+
+      .grid-item {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        font-size: 30px;
+        text-align: center;
+      }
+    </style>
+    <!--
+ Simplified version of this https://esausilva.com/2016/01/29/move-items-between-two-listbox-using-jquery-html-select-tag/ but using only vanilla JavaScript in script tag
+-->
+
+    <div class="main">
+      <div class="grid-container">
+        <div class="grid-item">
+          <select
+            multiple="multiple"
+            id="catBox"
+            class="form-control"
+            onChange="getDocuments()"
+          >
+            <!-- <option value="ajax">Ajax</option> -->
+          </select>
+        </div>
+
+        <div class="grid-item subject-info-box-1">
+          <select multiple="multiple" id="lstBox1" class="form-control">
+            <!-- <option value="dojo">Dojo</option> -->
+          </select>
+        </div>
+
+        <div class="grid-item subject-info-arrows text-center">
+          <input
+            type="button"
+            id="btnAllRight"
+            value="Add All >>"
+            class="btn btn-default"
+          /><br />
+          <input
+            type="button"
+            id="btnRight"
+            value="Add >"
+            class="btn btn-default"
+          /><br />
+          <input
+            type="button"
+            id="btnLeft"
+            value="< Remove"
+            class="btn btn-default"
+          /><br />
+          <input
+            type="button"
+            id="btnAllLeft"
+            value="<< Remove All"
+            class="btn btn-default"
+          />
+        </div>
+
+        <div class="grid-item subject-info-box-2" id="info-box-2">
+          <select multiple="multiple" id="lstBox2" class="form-control">
+            <!-- <option value="asp">ASP.NET</option> -->
+          </select>
+        </div>
+      </div>
+
+      <div class="clearfix">
+        <button type="submit" id="saveItems">Save</button>
+      </div>
+      <p id="save"></p>
+      <div><p id="container"></p></div>
+    </div>
+
+    <script type="application/javascript">
+      document
+        .getElementById("btnAllRight")
+        .addEventListener("click", function (e) {
+          var options = document.getElementById("lstBox1").options;
+          var selectedOpts = [];
+
+          for (var i = 0; i < options.length; i++) {
+            selectedOpts.push(options[i]);
+          }
+
+          if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+          }
+
+          var lstBox2 = document.getElementById("lstBox2");
+
+          selectedOpts.forEach(function (opt) {
+            lstBox2.appendChild(opt);
+          });
+        });
+      document
+        .getElementById("btnRight")
+        .addEventListener("click", function (e) {
+          var options = document.getElementById("lstBox1").options;
+          var selectedOpts = [];
+
+          for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+              selectedOpts.push(options[i]);
+            }
+          }
+
+          if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+          }
+
+          var lstBox2 = document.getElementById("lstBox2");
+
+          selectedOpts.forEach(function (opt) {
+            lstBox2.appendChild(opt);
+          });
+        });
+
+      document
+        .getElementById("btnAllLeft")
+        .addEventListener("click", function (e) {
+          var options = document.getElementById("lstBox2").options;
+          var selectedOpts = [];
+
+          for (var i = 0; i < options.length; i++) {
+            selectedOpts.push(options[i]);
+          }
+
+          if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+          }
+
+          var lstBox1 = document.getElementById("lstBox1");
+
+          selectedOpts.forEach(function (opt) {
+            lstBox1.appendChild(opt);
+          });
+        });
+
+      document
+        .getElementById("btnLeft")
+        .addEventListener("click", function (e) {
+          var options = document.getElementById("lstBox2").options;
+          var selectedOpts = [];
+
+          for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+              selectedOpts.push(options[i]);
+            }
+          }
+
+          if (selectedOpts.length == 0) {
+            alert("Nothing to move.");
+            e.preventDefault();
+          }
+
+          var lstBox1 = document.getElementById("lstBox1");
+
+          selectedOpts.forEach(function (opt) {
+            lstBox1.appendChild(opt);
+          });
+        });
+
+      document
+        .getElementById("saveItems")
+        .addEventListener("click", function (e) {
+          var options = document.getElementById("lstBox2").options;
+          document.getElementById("save").innerHTML = "";
+          for (var i = 0; i < options.length; i++) {
+            // console.log(options[i].value)
+            const node = document.createElement("p");
+            const textnode = document.createTextNode(options[i].value);
+            node.appendChild(textnode);
+            document.getElementById("save").appendChild(node);
+          }
+        });
+
+      //alert("inside");
+      var data =
+        '{"Category1":{"sel": [], "unsel":["Doc14","Doc15","Doc16"]},"Category2":{"sel": ["Doc21", "Doc22", "Doc23"], "unsel":["Doc24","Doc25","Doc26"]},"Category3":{"sel": ["Doc31", "Doc32", "Doc33"], "unsel":["Doc34","Doc35","Doc36"]},"Category4":{"sel": ["Doc41", "Doc42", "Doc43"], "unsel":["Doc44","Doc45","Doc46"]}}';
+
+      const mydata = JSON.parse(data);
+      var unSelectedvalues = [];
+      var selectedValues = [];
+
+      var categories = [];
+      for (var key in mydata) {
+        categories.push(key);
+      }
+      //console.log(categories);
+      dynamicSelect(categories, "catBox");
+      var cate = document.getElementById("catBox").value;
+      if (cate != "") {
+        unSelectedvalues = mydata[cate].unsel;
+        dynamicSelect(unSelectedvalues, "lstBox1");
+        if (mydata[cate].sel) {
+          selectedValues = mydata[cate].sel;
+          dynamicSelect(selectedValues, "lstBox2");
+        }
+      }
+
+      function getDocuments() {
+        var cate = document.getElementById("catBox").value;
+        var options = document.getElementById("catBox").options;
+        var selectedOpts = [];
+        for (var i = 0; i < options.length; i++) {
+          if (options[i].selected) {
+            selectedOpts.push(options[i]);
+            if (selectedOpts.length > 1) {
+              alert("Select only one");
+              document.getElementById("catBox").options[i].selected = false;
+              e.preventDefault();
+            }
+          }
+        }
+
+        unSelectedvalues = mydata[cate].unsel;
+        dynamicSelect(unSelectedvalues, "lstBox1");
+        selectedValues = mydata[cate].sel;
+        dynamicSelect(selectedValues, "lstBox2");
+      }
+
+      function dynamicSelect(values, id) {
+        document.getElementById(id).replaceChildren();
+        for (const val of values) {
+          var option = document.createElement("option");
+          option.value = val;
+          option.text = val.charAt(0).toUpperCase() + val.slice(1);
+          document.getElementById(id).appendChild(option);
+        }
+      }
+    </script>
+  </body>
+</html>
